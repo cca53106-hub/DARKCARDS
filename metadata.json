@@ -1,0 +1,6 @@
+{
+  "name": "Unknown Black Card",
+  "description": "Bespoke matte black cards customized with premium laser-engraved details, chips, and custom numbering. Premium physical cards for $20.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
