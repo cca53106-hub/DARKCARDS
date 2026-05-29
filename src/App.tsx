@@ -7,6 +7,7 @@ import Vault from './components/Vault';
 import DecryptionPortal from './components/DecryptionPortal';
 import SpecimenAnalyzer from './components/SpecimenAnalyzer';
 import AdminConsole from './components/AdminConsole';
+import AdminPasswordGate from './components/AdminPasswordGate';
 import { RESERVED_DROP_ASSETS, CardAsset } from './data/cards';
 import { 
   Plus, 
@@ -45,6 +46,9 @@ export default function App() {
   const [flippedCardIds, setFlippedCardIds] = useState<Record<string, boolean>>({});
   const [isAdminEnabled, setIsAdminEnabled] = useState<boolean>(() => {
     return localStorage.getItem('admin_session_auth') === 'unlocked';
+  });
+  const [isAdminUnlocked, setIsAdminUnlocked] = useState<boolean>(() => {
+    return sessionStorage.getItem('admin_gate_unlocked') === 'true';
   });
   
   // local storage reactive initial states
@@ -518,7 +522,14 @@ export default function App() {
 
         {/* VIEW 5: SOVEREIGN ADMIN ACCOUNT AND DISPATCH CONTROLS */}
         {activeTab === 'admin' && isAdminEnabled && (
-          <AdminConsole onResetComplete={loadCardsCatalog} />
+          isAdminUnlocked ? (
+            <AdminConsole onResetComplete={loadCardsCatalog} />
+          ) : (
+            <AdminPasswordGate onSuccess={() => {
+              setIsAdminUnlocked(true);
+              sessionStorage.setItem('admin_gate_unlocked', 'true');
+            }} />
+          )
         )}
 
         {/* COMPREHENSIVE FAQ SEGMENT */}

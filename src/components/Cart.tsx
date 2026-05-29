@@ -78,10 +78,6 @@ export default function Cart({ cart, removeFromCart, onCheckout, isProcessing }:
   };
 
   const handleFileSelected = (file: File) => {
-    if (!file.type.startsWith('image/')) {
-      setErrorMessage('Verification bot only accepts transaction screenshot/image proofs.');
-      return;
-    }
     setErrorMessage('');
     
     // Create visual thumbnail path
@@ -93,7 +89,7 @@ export default function Cart({ cart, removeFromCart, onCheckout, isProcessing }:
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64Data = reader.result as string;
-      startAiNeuralScan(file.name, file.size, base64Data, file.type);
+      startAiNeuralScan(file.name, file.size, base64Data, file.type || 'image/png');
     };
     reader.onerror = () => {
       setErrorMessage('Heuristics failure reading image file coordinates.');
@@ -378,7 +374,7 @@ export default function Cart({ cart, removeFromCart, onCheckout, isProcessing }:
                 type="file"
                 ref={fileInputRef}
                 onChange={handleFileChange}
-                accept="image/*"
+                accept="image/*,application/pdf,.heic,.heif,.svg"
                 className="hidden"
               />
 
@@ -397,8 +393,8 @@ export default function Cart({ cart, removeFromCart, onCheckout, isProcessing }:
               {proofImage && (
                 <div className="flex gap-4 items-center">
                   <div className="w-16 h-16 bg-zinc-900 rounded-lg border border-zinc-850 flex items-center justify-center overflow-hidden shrink-0">
-                    {proofImage === 'placeholder_data_uri' ? (
-                      <FileImage className="w-8 h-8 text-emerald-400 animate-pulse" />
+                    {proofImage === 'placeholder_data_uri' || !/\.(jpe?g|png|webp|gif|svg)$/i.test(proofFileName || '') ? (
+                      <FileImage className="w-8 h-8 text-[#d4af37] animate-pulse" />
                     ) : (
                       <img src={proofImage} alt="Receipt proof" className="w-full h-full object-cover" />
                     )}
